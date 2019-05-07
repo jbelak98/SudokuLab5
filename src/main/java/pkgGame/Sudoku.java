@@ -70,6 +70,10 @@ public class Sudoku extends LatinSquare implements Serializable {
 	 * @throws Exception if the iSize given doesn't have a whole number square root
 	 */
 	
+	private Sudoku(){
+		this.eGD = EASY;
+	}
+
 	public Sudoku(int iSize, eGameDifficulty eGD) throws Exception
 	{
 		this(iSize);
@@ -670,7 +674,40 @@ public class Sudoku extends LatinSquare implements Serializable {
 		}
 		return iCnt;
 	}
-
+	
+	private static int PossibleValuesMultiplyer(java.util.HashMap<java.lang.Integer,Sudoku.SudokuCell>cells){
+		int difficultyValue = 1;
+		for (int row=0; row<iSize; row++) {
+			for (int col=0; col<iSize; col++){
+				sudokuValue = (SudokuCell)cells.get(Objects.hash(iRow,iCol));
+				difficultyValue = difficultyValue*sudokuValue;
+			}
+		}
+		return difficultyValue;
+	}
+	
+	private boolean isDifficultyMet(int iPossibleValues) {
+		int dif = this.eGameDifficulty.getiDifficulty();
+		int a=1;
+		int b=iPossibleValues;
+		return diff < (a+b);
+	}
+	
+	private void RemoveCells() throws Exception {
+		while (!isDificultyMet(possibleValuesMulitplier())) {
+			this.cells.remove(Math.random()*this.iSize*this.iSize);
+		}
+	}
+	
+	private void SetRemainingCells() {
+		for (int row=0; row<iSize; row++) {
+			for (int col=0; col<iSize; col++) {
+				SudokuCell c = newSudokuCell(row,col);
+				cells.put(c.hashCode()).setlstValidValues(getAllValidCellValues(col,row)));
+			}
+		}
+	}
+	
 	/**
 	 * Cell - private class that handles possible remaining values
 	 * 
